@@ -40,6 +40,20 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Root route - Welcome Page
+app.get('/', (req, res) => {
+  res.send(`
+    <div style="font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #0f172a; color: white; text-align: center;">
+      <h1 style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(to right, #3b82f6, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">TaskFlow API</h1>
+      <p style="font-size: 1.25rem; color: #94a3b8; max-width: 600px;">The real-time backend for your collaborative task management system is up and running.</p>
+      <div style="margin-top: 2rem; padding: 1rem 2rem; border-radius: 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+        <code style="color: #60a5fa;">Status: 🟢 Online</code>
+      </div>
+      <p style="margin-top: 3rem; font-size: 0.875rem; color: #64748b;">&copy; ${new Date().getFullYear()} TaskFlow | Built for Efficiency</p>
+    </div>
+  `);
+});
+
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
