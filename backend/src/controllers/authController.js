@@ -70,11 +70,16 @@ exports.signup = async (req, res) => {
     // Generate token
     const token = generateToken(user._id);
 
+    // Populate before sending
+    const populatedUser = await User.findById(user._id)
+      .populate('activeTeam', 'name inviteCode')
+      .populate('teams', 'name inviteCode');
+
     res.status(201).json({
       success: true,
       message: 'Account created successfully!',
       data: {
-        user: user.toJSON(),
+        user: populatedUser.toJSON(),
         token,
       },
     });
@@ -119,11 +124,16 @@ exports.login = async (req, res) => {
     // Generate token
     const token = generateToken(user._id);
 
+    // Populate before sending
+    const populatedUser = await User.findById(user._id)
+      .populate('activeTeam', 'name inviteCode')
+      .populate('teams', 'name inviteCode');
+
     res.json({
       success: true,
       message: 'Login successful!',
       data: {
-        user: user.toJSON(),
+        user: populatedUser.toJSON(),
         token,
       },
     });
