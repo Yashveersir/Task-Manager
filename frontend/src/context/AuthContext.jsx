@@ -48,6 +48,30 @@ export function AuthProvider({ children }) {
     return res.data;
   };
 
+  const switchTeam = async (teamId) => {
+    const res = await api.patch(`/auth/switch-team/${teamId}`);
+    const { user: userData } = res.data.data;
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    return res.data;
+  };
+
+  const joinTeam = async (inviteCode) => {
+    const res = await api.post('/auth/join-team', { inviteCode });
+    const { user: userData } = res.data.data;
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    return res.data;
+  };
+
+  const createTeam = async (name) => {
+    const res = await api.post('/auth/create-team', { name });
+    const { user: userData } = res.data.data;
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    return res.data;
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -55,7 +79,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, switchTeam, joinTeam, createTeam }}>
       {children}
     </AuthContext.Provider>
   );

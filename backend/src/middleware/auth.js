@@ -27,6 +27,8 @@ const auth = async (req, res, next) => {
     }
 
     req.user = user;
+    // Map activeTeam to team for backward compatibility in controllers
+    req.user.team = user.activeTeam;
     next();
   } catch (error) {
     if (error.name === 'JsonWebTokenError') {

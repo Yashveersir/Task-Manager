@@ -15,6 +15,8 @@ export default function TaskBoard() {
   const [editingTask, setEditingTask] = useState(null);
   const { socket } = useSocket();
 
+  const teamId = user?.activeTeam?._id;
+
   const fetchTasks = async () => {
     try {
       const res = await api.get('/tasks');
@@ -36,9 +38,11 @@ export default function TaskBoard() {
   };
 
   useEffect(() => {
-    fetchTasks();
-    fetchUsers();
-  }, []);
+    if (teamId) {
+      fetchTasks();
+      fetchUsers();
+    }
+  }, [teamId]);
 
   // Real-time updates
   useEffect(() => {

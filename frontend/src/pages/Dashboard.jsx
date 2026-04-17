@@ -12,7 +12,10 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [recentTasks, setRecentTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
   const { socket } = useSocket();
+  
+  const teamId = user?.activeTeam?._id;
 
   const fetchStats = async () => {
     try {
@@ -27,8 +30,10 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetchStats();
-  }, []);
+    if (teamId) {
+      fetchStats();
+    }
+  }, [teamId]);
 
   // Listen for real-time updates
   useEffect(() => {

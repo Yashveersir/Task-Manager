@@ -30,8 +30,8 @@ export function SocketProvider({ children }) {
 
     newSocket.on('connect', () => {
       console.log('🔌 Socket connected');
-      // team could be populated object or just ID
-      const teamId = user.team?._id || user.team;
+      // Use activeTeam ID
+      const teamId = user.activeTeam?._id || user.activeTeam;
       newSocket.emit('user:register', { userId: user._id, teamId });
     });
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
-const { signup, login, getMe } = require('../controllers/authController');
+const { signup, login, getMe, switchTeam, joinTeam, createTeam } = require('../controllers/authController');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
@@ -20,5 +20,14 @@ router.post('/login', [
 
 // GET /api/auth/me
 router.get('/me', auth, getMe);
+
+// PATCH /api/auth/switch-team/:teamId
+router.patch('/switch-team/:teamId', auth, switchTeam);
+
+// POST /api/auth/join-team
+router.post('/join-team', auth, joinTeam);
+
+// POST /api/auth/create-team
+router.post('/create-team', auth, createTeam);
 
 module.exports = router;

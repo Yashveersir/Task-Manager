@@ -32,11 +32,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
-  team: {
+  activeTeam: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Team',
     required: true,
   },
+  teams: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Team',
+  }],
 }, {
   timestamps: true,
 });

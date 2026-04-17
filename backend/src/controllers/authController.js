@@ -58,7 +58,8 @@ exports.signup = async (req, res) => {
       name, 
       email, 
       password,
-      team: teamId 
+      activeTeam: teamId,
+      teams: [teamId] 
     });
 
     // If we just created the team, set the createdBy to this new user
@@ -139,7 +140,10 @@ exports.login = async (req, res) => {
 // @route   GET /api/auth/me
 exports.getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).populate('team', 'name inviteCode');
+    const user = await User.findById(req.user._id)
+      .populate('activeTeam', 'name inviteCode')
+      .populate('teams', 'name inviteCode');
+      
     res.json({
       success: true,
       data: { user },
@@ -149,5 +153,106 @@ exports.getMe = async (req, res) => {
       success: false,
       message: 'Error fetching user profile.',
     });
+  }
+};
+
+// @desc    Switch active team
+// @route   PATCH /api/auth/switch-team/:teamId
+exports.switchTeam = async (req, res) => {
+  try {
+    const { teamId } = req.params;
+    
+    // Check if user belongs to this team
+    if (!req.user.teams.some(id => id.toString() === teamId)) {
+      return res.status(403).json({
+        success: false,
+        message: 'You are not a member of this team.'
+      });
+    }
+    
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { activeTeam: teamId },
+      { new: true }
+    ).populate('activeTeam', 'name inviteCode').populate('teams', 'name inviteCode');
+    
+    res.json({
+      success: true,
+      message: 'Team switched successfully',
+      data: { user }
+    });
+  } catch (error) {
+    console.error('Switch Team Error:', error);
+    res.status(500).json({ success: false, message: 'Error switching team' });
+  }
+};
+
+// @desc    Join a new team via invite code
+// @route   POST /api/auth/join-team
+exports.joinTeam = async (req, res) => {
+  try {
+    const { inviteCode } = req.body;
+    
+    const team = await Team.findOne({ inviteCode });
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Invalid invite code' });
+    }
+    
+    // Check if user is already in this team
+    if (req.user.teams.some(id => id.toString() === team._id.toString())) {
+      return res.status(400).json({ success: false, message: 'You are already a member of this team' });
+    }
+    
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { 
+        $push: { teams: team._id },
+        activeTeam: team._id 
+      },
+      { new: true }
+    ).populate('activeTeam', 'name inviteCode').populate('teams', 'name inviteCode');
+    
+    res.json({
+      success: true,
+      message: `Joined ${team.name} successfully`,
+      data: { user }
+    });
+  } catch (error) {
+    console.error('Join Team Error:', error);
+    res.status(500).json({ success: false, message: 'Error joining team' });
+  }
+};
+
+// @desc    Create an additional team
+// @route   POST /api/auth/create-team
+exports.createTeam = async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ success: false, message: 'Team name is required' });
+    
+    const generatedCode = crypto.randomBytes(4).toString('hex').toUpperCase();
+    const newTeam = await Team.create({
+      name,
+      inviteCode: generatedCode,
+      createdBy: req.user._id
+    });
+    
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { 
+        $push: { teams: newTeam._id },
+        activeTeam: newTeam._id 
+      },
+      { new: true }
+    ).populate('activeTeam', 'name inviteCode').populate('teams', 'name inviteCode');
+    
+    res.status(201).json({
+      success: true,
+      message: 'Team created successfully',
+      data: { user }
+    });
+  } catch (error) {
+    console.error('Create Team Error:', error);
+    res.status(500).json({ success: false, message: 'Error creating team' });
   }
 };

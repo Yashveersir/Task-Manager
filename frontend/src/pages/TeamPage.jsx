@@ -17,7 +17,8 @@ export default function TeamPage() {
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
   const { user } = useAuth();
-  const inviteCode = user?.team?.inviteCode || 'N/A';
+  const inviteCode = user?.activeTeam?.inviteCode || 'N/A';
+  const teamId = user?.activeTeam?._id;
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -30,8 +31,10 @@ export default function TeamPage() {
         setLoading(false);
       }
     };
-    fetchUsers();
-  }, []);
+    if (teamId) {
+      fetchUsers();
+    }
+  }, [teamId]);
 
   if (loading) {
     return (

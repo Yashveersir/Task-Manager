@@ -1,12 +1,6 @@
-import { NavLink } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  KanbanSquare,
-  Users,
-  CheckCircle2,
-  X,
   Zap,
 } from 'lucide-react';
+import TeamSwitcher from '../team/TeamSwitcher';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -40,6 +34,11 @@ export default function Sidebar({ isOpen, onClose }) {
         >
           <X className="w-5 h-5" />
         </button>
+      </div>
+
+      {/* Team Switcher */}
+      <div className="pt-4">
+        <TeamSwitcher />
       </div>
 
       {/* Navigation */}
