@@ -9,6 +9,11 @@ const { setupSocket } = require('./socket/socketHandler');
 // Load environment variables
 dotenv.config();
 
+// Ensure CLIENT_URL doesn't have a trailing slash (Fixes CORS issues)
+if (process.env.CLIENT_URL) {
+  process.env.CLIENT_URL = process.env.CLIENT_URL.replace(/\/$/, '');
+}
+
 // Connect to MongoDB
 connectDB();
 
