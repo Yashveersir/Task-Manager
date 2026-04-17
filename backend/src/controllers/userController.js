@@ -4,7 +4,7 @@ const User = require('../models/User');
 // @route   GET /api/users
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find({ team: req.user.team }).select('name email role avatar createdAt');
+    const users = await User.find({ teams: req.user.team }).select('name email role avatar createdAt');
     res.json({
       success: true,
       data: { users },
