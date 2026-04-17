@@ -1,3 +1,10 @@
+import { NavLink } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  KanbanSquare,
+  Users,
+  CheckCircle2,
+  X,
   Zap,
 } from 'lucide-react';
 import TeamSwitcher from '../team/TeamSwitcher';
