@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import StatsCards from '../components/dashboard/StatsCards';
 import TaskChart from '../components/dashboard/TaskChart';

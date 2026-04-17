@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import BoardColumn from '../components/tasks/BoardColumn';
 import TaskModal from '../components/tasks/TaskModal';
@@ -13,6 +14,7 @@ export default function TaskBoard() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const { user } = useAuth();
   const { socket } = useSocket();
 
   const teamId = user?.activeTeam?._id;
